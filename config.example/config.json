@@ -1,0 +1,10 @@
+{
+	"domains": [
+		{
+			"name": "example",
+			"assets": [
+				"example.jpg"
+			]
+		}
+	]
+}
