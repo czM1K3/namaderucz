@@ -1,8 +1,8 @@
 import {
+	isString,
+	required,
 	validate,
 	validateArray,
-	required,
-	isString,
 	validateObject,
 } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
 

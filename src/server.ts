@@ -39,22 +39,25 @@ app.get("/", (_req, res) => {
 	if (config.domains.map((domain) => domain.name).includes(res.locals.path)) {
 		res.send(
 			assetHtml(
-				config.domains.find((domain) => domain.name === res.locals.path)?.assets!
-			)
+				config.domains.find((domain) => domain.name === res.locals.path)
+					?.assets!,
+			),
 		);
 	} else {
 		res.send(
 			mainHtml(
 				"Asi jsi na maděru 🤷‍♂️",
-				res.locals.path ? `Ale ${res.locals.path} asi není na maděru` : null
-			)
+				res.locals.path
+					? `Ale ${res.locals.path} asi není na maděru`
+					: null,
+			),
 		);
 	}
 });
 
 app.get("/asset/*", (req, res) => {
 	const domain = config.domains.find(
-		(domain) => domain.name === res.locals.path
+		(domain) => domain.name === res.locals.path,
 	);
 	if (!domain) {
 		res.status = 404;
@@ -71,6 +74,7 @@ app.get("/asset/*", (req, res) => {
 	}
 });
 
-app.listen(3000, () =>
-	console.log("server has started on http://localhost:3000 🚀")
+app.listen(
+	3000,
+	() => console.log("server has started on http://localhost:3000 🚀"),
 );
