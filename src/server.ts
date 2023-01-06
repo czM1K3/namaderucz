@@ -4,21 +4,19 @@ import mainHtml from "./templates/main.ts";
 import assetHtml from "./templates/asset.ts";
 import ConfigType from "./configType.ts";
 
-const configRaw = await Deno.readTextFile("./config/config.json").catch(() => {
-	console.log("Error reading config file");
-	Deno.exit(1);
-});
-const config = (() => {
-	try {
-		return JSON.parse(configRaw);
-	} catch {
-		return null;
-	}
-})() as ConfigType | null;
-if (!config) {
-	console.log("Error parsing config file!");
-	Deno.exit(1);
-}
+const config = await Deno.readTextFile("./config/config.json")
+	.catch(() => {
+		console.log("Error reading config file");
+		Deno.exit(1);
+	})
+	.then((str) => {
+		try {
+			return JSON.parse(str) as ConfigType;
+		} catch {
+			console.log("Error parsing config file!");
+			Deno.exit(1);
+		}
+	});
 
 const [isConfigValid] = await validate(config);
 if (!isConfigValid) {
@@ -39,25 +37,22 @@ app.get("/", (_req, res) => {
 	if (config.domains.map((domain) => domain.name).includes(res.locals.path)) {
 		res.send(
 			assetHtml(
-				config.domains.find((domain) => domain.name === res.locals.path)
-					?.assets!,
-			),
+				config.domains.find((domain) => domain.name === res.locals.path)?.assets!
+			)
 		);
 	} else {
 		res.send(
 			mainHtml(
 				"Asi jsi na maděru 🤷‍♂️",
-				res.locals.path
-					? `Ale ${res.locals.path} asi není na maděru`
-					: null,
-			),
+				res.locals.path ? `Ale ${res.locals.path} asi není na maděru` : null
+			)
 		);
 	}
 });
 
 app.get("/asset/*", (req, res) => {
 	const domain = config.domains.find(
-		(domain) => domain.name === res.locals.path,
+		(domain) => domain.name === res.locals.path
 	);
 	if (!domain) {
 		res.status = 404;
@@ -74,7 +69,6 @@ app.get("/asset/*", (req, res) => {
 	}
 });
 
-app.listen(
-	3000,
-	() => console.log("server has started on http://localhost:3000 🚀"),
+app.listen(3000, () =>
+	console.log("server has started on http://localhost:3000 🚀")
 );
