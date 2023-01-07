@@ -3,6 +3,7 @@ import validate from "./validateConfig.ts";
 import mainHtml from "./templates/main.ts";
 import assetHtml from "./templates/asset.ts";
 import ConfigType from "./configType.ts";
+import notFound from "./templates/notFound.ts";
 
 const config = await Deno.readTextFile("./config/config.json")
 	.catch(() => {
@@ -67,6 +68,11 @@ app.get("/asset/*", (req, res) => {
 		res.status = 404;
 		res.end();
 	}
+});
+
+app.use((_req, res, _next) => {
+	res.status = 404;
+	res.send(notFound());
 });
 
 app.listen(3000, () =>
