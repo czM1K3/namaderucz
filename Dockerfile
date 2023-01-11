@@ -7,6 +7,7 @@ FROM debian:stable-slim as runner
 WORKDIR /app
 RUN adduser --uid 1002 deno
 COPY --from=builder /app/server ./namaderu
+COPY public/ ./public/
 USER deno
 EXPOSE 3000
 
