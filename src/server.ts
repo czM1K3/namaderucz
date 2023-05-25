@@ -1,29 +1,20 @@
 import { opine } from "https://deno.land/x/opine@2.3.3/mod.ts";
-import validate from "./validateConfig.ts";
 import mainHtml from "./templates/main.ts";
 import assetHtml from "./templates/asset.ts";
-import ConfigType from "./configType.ts";
 import notFound from "./templates/notFound.ts";
+import { loadConfig } from "./config.ts";
 
-const config = await Deno.readTextFile("./config/config.json")
-	.catch(() => {
-		console.log("Error reading config file");
-		Deno.exit(1);
-	})
-	.then((str) => {
-		try {
-			return JSON.parse(str) as ConfigType;
-		} catch {
-			console.log("Error parsing config file!");
-			Deno.exit(1);
-		}
+// Load initial config
+let config = await loadConfig();
+
+(async () => {
+	const configWatcher = Deno.watchFs("./config/config.json", {
+		recursive: false,
 	});
-
-const [isConfigValid] = await validate(config);
-if (!isConfigValid) {
-	console.log("Config is not valid");
-	Deno.exit(1);
-}
+	for await (const event of configWatcher) {
+		if (event.kind === "modify") config = await loadConfig();
+	}
+})();
 
 const app = opine();
 
@@ -35,12 +26,9 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (_req, res) => {
-	if (config.domains.map((domain) => domain.name).includes(res.locals.path)) {
-		res.send(
-			assetHtml(
-				config.domains.find((domain) => domain.name === res.locals.path)?.assets!
-			)
-		);
+	const currentDomain = config[res.locals.path];
+	if (currentDomain) {
+		res.send(assetHtml(currentDomain));
 	} else {
 		res.send(
 			mainHtml(
@@ -52,16 +40,14 @@ app.get("/", (_req, res) => {
 });
 
 app.get("/asset/*", (req, res) => {
-	const domain = config.domains.find(
-		(domain) => domain.name === res.locals.path
-	);
-	if (!domain) {
+	const currentDomain = config[res.locals.path];
+	if (!currentDomain) {
 		res.status = 404;
 		res.end();
 		return;
 	}
 	const file = req.params[0];
-	if (domain.assets.includes(file)) {
+	if (currentDomain.includes(file)) {
 		const path = Deno.realPathSync(`${Deno.cwd()}/config/assets/${file}`);
 		res.download(path);
 	} else {
