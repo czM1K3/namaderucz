@@ -1,4 +1,4 @@
-import { opine } from "https://deno.land/x/opine@2.3.3/mod.ts";
+import { opine, serveStatic } from "https://deno.land/x/opine@2.3.3/mod.ts";
 import mainHtml from "./templates/main.ts";
 import assetHtml from "./templates/asset.ts";
 import notFound from "./templates/notFound.ts";
@@ -55,6 +55,8 @@ app.get("/asset/*", (req, res) => {
 		res.end();
 	}
 });
+
+app.use(serveStatic("public"));
 
 app.use((_req, res, _next) => {
 	res.status = 404;

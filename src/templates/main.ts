@@ -6,4 +6,9 @@ export default (message: string, messageAlt: string | null) =>
 	<h1>${message}</h1>
 	${messageAlt ? `<h2>${messageAlt}</h2>` : ""}
 </div>
+<script>
+	window.onload = () => {
+		console.log("Dokážeš najít easter egg? 🤔");
+	};
+</script
 `);
