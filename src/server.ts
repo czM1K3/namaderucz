@@ -25,10 +25,11 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.get("/", (_req, res) => {
+app.get("/", (req, res) => {
+	const domain = req.get("host")
 	const currentDomain = config[res.locals.path];
 	if (currentDomain) {
-		res.send(assetHtml(currentDomain));
+		res.send(assetHtml(currentDomain, domain));
 	} else {
 		res.send(
 			mainHtml(
