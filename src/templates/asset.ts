@@ -1,5 +1,7 @@
 import body from "./_body.ts";
 
+const CDN = "https://images.weserv.nl/?q=100&maxage=31d&url=";
+
 export default (images: string[]) =>
 	body(`
 <div id="carouselIndicators" class="carousel slide bg-dark" data-bs-ride="true">
@@ -23,7 +25,7 @@ export default (images: string[]) =>
 					<div class="carousel-item ` +
 					(index === 0 ? "active" : "") +
 					`">
-						<img class="d-block vh-100 vw-100 object-fit-contain" src="/asset/${image}" alt="img-${index}">
+						<img class="d-block vh-100 vw-100 object-fit-contain" src="${CDN}${window.location.host}/asset/${image}" alt="img-${index}">
 					</div>
 					`
 			)
