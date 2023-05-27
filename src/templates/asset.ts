@@ -1,6 +1,6 @@
 import body from "./_body.ts";
 
-const CDN = "https://images.weserv.nl/?q=100&maxage=31d&url=";
+const CDN = "https://images.weserv.nl/?q=100&maxage=31d&n=-1&url=";
 
 export default (images: string[], host: string) =>
 	body(`
