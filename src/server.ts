@@ -26,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-	const domain = req.get("host")
+	const domain = req.get("host")!;
 	const currentDomain = config[res.locals.path];
 	if (currentDomain) {
 		res.send(assetHtml(currentDomain, domain));
