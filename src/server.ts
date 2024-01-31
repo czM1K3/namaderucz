@@ -22,7 +22,6 @@ app.use((req, res, next) => {
 	const domain = req.get("host")!;
 	const match = domain.match(/([a-z]*)\.namaderu.cz$/);
 	res.locals.path = match ? (match[1] === "www" ? "" : match[1]) : "";
-	res.locals.path = "example";
 	next();
 });
 
