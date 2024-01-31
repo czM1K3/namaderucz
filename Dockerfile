@@ -1,4 +1,4 @@
-FROM lukechannings/deno:v1.29.1 as builder
+FROM lukechannings/deno:v1.39.4 as builder
 WORKDIR /app
 COPY src/ ./
 RUN deno compile --allow-read --allow-net --allow-env ./server.ts

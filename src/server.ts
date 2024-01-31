@@ -1,4 +1,4 @@
-import { opine, serveStatic } from "https://deno.land/x/opine@2.3.3/mod.ts";
+import { opine, serveStatic } from "https://deno.land/x/opine@2.3.4/mod.ts";
 import mainHtml from "./templates/main.ts";
 import assetHtml from "./templates/asset.ts";
 import notFound from "./templates/notFound.ts";
@@ -22,14 +22,14 @@ app.use((req, res, next) => {
 	const domain = req.get("host")!;
 	const match = domain.match(/([a-z]*)\.namaderu.cz$/);
 	res.locals.path = match ? (match[1] === "www" ? "" : match[1]) : "";
+	res.locals.path = "example";
 	next();
 });
 
-app.get("/", (req, res) => {
-	const domain = req.get("host")!;
+app.get("/", (_req, res) => {
 	const currentDomain = config[res.locals.path];
 	if (currentDomain) {
-		res.send(assetHtml(currentDomain, domain));
+		res.send(assetHtml(currentDomain));
 	} else {
 		res.send(
 			mainHtml(
